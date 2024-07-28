@@ -5,13 +5,13 @@ use grep::Config; //Importando definições criadas no arquivo lib.rs
 fn main() {
     let args: Vec<String> = env::args().collect(); //Collect transforma o iterator args() em um vetor
     let config = Config::build(&args).unwrap_or_else(|err| { //unwrap_or_else retorna o Ok caso não haja erro e podemos personalizar o que sairá no erro
-        //println!("Problem parsing arguments: {err}");
+        eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
     //println!("Buscando: {}",config.query);
     //println!("No arquivo: {}",config.file_path);
     if let Err(e) = grep::run(config){ //Usamos if let no lugar de unwrap_or_else porque queremos apenas identificar caso aja erro, já que em caso de sucesso nada será retornardo pela função
-        //println!("Application error: {e}");
+        eprintln!("Application error: {e}");
         process::exit(1)
     }
 
