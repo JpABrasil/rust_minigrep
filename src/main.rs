@@ -4,7 +4,7 @@ use std::process;//Fechar processos
 use grep::Config; //Importando definições criadas no arquivo lib.rs
 fn main() {
     let args: Vec<String> = env::args().collect(); //Collect transforma o iterator args() em um vetor
-    let config = Config::build(&args).unwrap_or_else(|err| { //unwrap_or_else retorna o Ok caso não haja erro e podemos personalizar o que sairá no erro
+    let config = Config::build(env::args()).unwrap_or_else(|err| { //unwrap_or_else retorna o Ok caso não haja erro e podemos personalizar o que sairá no erro
         eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });

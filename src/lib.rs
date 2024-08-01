@@ -8,13 +8,24 @@ pub struct Config{
     pub ignore_case:bool
 }
 
-impl Config{
-    pub fn build(args: &[String]) -> Result<Config, &'static str>{ //'static é um tipo de lifetime
-        if args.len() < 3{
+impl Config{//Usamos trait como um parametro aqui
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str>{ //'static é um tipo de lifetime
+        args.next();
+        let query = match args.next(){
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string")
+        };
+        let file_path= match args.next(){
+            Some(arg) => arg,
+            None => return Err("Didn't get a file path")
+        };
+       /* if args.len() < 3{
             return Err("Precisamos de mais argumentos"); //Caso args tenha menos de 3 Strings
-        }
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        }*/
+
+       /*let query = args[1].clone();
+        let file_path = args[2].clone();*/
+
         let ignore_case = env::var("IGNORE_CASE").is_ok();
         Ok(Config {query,file_path,ignore_case})
     }
@@ -35,13 +46,17 @@ pub fn run(config: Config) -> Result<(),Box<dyn Error>>{ //Função Retorna Resu
 }
 
 pub fn search<'a>(query:&str,contents:&'a str) ->Vec<&'a str>{ //Aqui definimos que os dados retornardos por seach teram o mesmo lifetime de contents
-    let mut results = vec::Vec::new();
+    contents
+        .lines()
+        .filter(|line|line.contains(query)) //Filtra o iterator
+        .collect()
+    /*let mut results = Vec::new();
     for line in contents.lines(){//Metodo lines retorna um iterator
         if line.contains(query){
             results.push(line)
         }
     }
-    results
+    results*/
 }
 
 pub fn search_case_insensitive<'a>(query:&str, contents:&'a str) ->Vec<&'a str>{
